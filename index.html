@@ -314,7 +314,11 @@ function renderDay(v) {
   };
   $('#startNow').onclick = () => {
     const dd = ensureDay(d); const last = dd.entries[dd.entries.length-1];
-    if (last && !last.end) last.end = fromMin(nowMin5());
+    if (last && !last.end) {
+      last.end = fromMin(nowMin5());
+      // 押し直しで0分になる記録は残さない（「終了する」側と揃える）
+      if (last.end === last.start) dd.entries.pop();
+    }
     dd.entries.push({id: uid(), start: fromMin(nowMin5()), end: '', cat: last ? last.cat : (cats()[0]?.id || ''), project: last ? last.project : '', task: ''});
     saveDay(d); drawEntries(d, true);
   };
